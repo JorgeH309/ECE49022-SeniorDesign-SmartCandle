@@ -2,6 +2,10 @@
 
 Collaborators: Scottie Gilden, Jorge Hernandez, Andrew Kloosterman and Deimos Teng
 
+Purpose: To build a device that can automate the lighting and extinguishing of a candle.
+
+![](images/EmbeddedSoftwareDiagram.jpg)
+
 
 Resources:
 - RP2350 Datasheet: https://pip-assets.raspberrypi.com/categories/1214-rp2350/documents/RP-008373-DS-2-rp2350-datasheet.pdf?disposition=inline#section_pwm
