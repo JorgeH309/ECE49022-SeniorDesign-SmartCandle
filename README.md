@@ -10,5 +10,5 @@ Resources:
 - A4988 Motor Driver Module Tutorial: https://lastminuteengineers.com/a4988-stepper-motor-driver-arduino-tutorial/
 - 17HS16-2004S1 Stepper Motor Spec Sheet: https://www.omc-stepperonline.com/download/17HS16-2004S1.pdf
 - IR Sensor circuit built following schematic:
--
+-![](images/IR_schematic.png)
 - https://components101.com/sites/default/files/component_datasheet/Datasheet%20of%20IR%20%20Sensor.pdf
