@@ -4,7 +4,7 @@
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"
 #include "config.h"
-#include "mcu_init.h"
+#include "init.h"
 
 
 // *********** Peripheral initialization functions *********** //

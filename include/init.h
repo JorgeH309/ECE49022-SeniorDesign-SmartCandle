@@ -1,5 +1,5 @@
-#ifndef MCU_INIT_H
-#define MCU_INIT_H
+#ifndef INIT_H
+#define INIT_H
 
 void us_gpio_init(void);
 void motor_gpio_init(void);
