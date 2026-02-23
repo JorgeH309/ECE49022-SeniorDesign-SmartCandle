@@ -2,50 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"
-
-
-typedef enum {
-    LIVE,
-    SUB_DEMO,
-    DEBUG
-} TEST_MODES;
-TEST_MODES TEST_MODE = SUB_DEMO;
-
-typedef enum {
-    MOTOR,
-    ULTRASONIC,
-    SERVO
-} COMPONENTS;
-
-COMPONENTS DEBUG_DEVICE = MOTOR;
-
-typedef enum {
-    LIGHT,
-    SNUFF,
-    BASE
-} FORK_POSITION;
-// just use pin numbers directly on board
-
-// ultrasonic sensor pins
-const int TRIG = 28;
-const int ECHO = 27;
-
-// X and Y motor pins
-const int XDIR = 6;  // VALID
-const int XSTEP = 5; // VALID
-const int YDIR = 4; // INVALID, needs to be changed
-const int YSTEP = 3; // INVALID, needs to be changed
-
-// button GPIO pin
-const int BUTTON = 15;
-
-// IR sensor pin
-const int IR_PIN = 14;
-
-// Gate driver PWM pin
-const int GATE_PWM = 13;
-int PERIOD = 10000;
-int DUTY_CYCLE = 5000;
+#include "config.h"
 
 
 // *********** Peripheral initialization functions *********** //
@@ -96,7 +53,7 @@ void gate_driver_pwm_init() {
     
     gpio_set_function(GATE_PWM, GPIO_FUNC_PWM);
     uint slice_num = pwm_gpio_to_slice_num(GATE_PWM);
-    pwm_set_clkdiv(slice_num, 150);
+    pwm_set_clkdiv(slice_num, CLOCK_DIVIDER);
     pwm_set_wrap(slice_num, PERIOD - 1);
     pwm_set_chan_level(slice_num, PWM_CHAN_A, DUTY_CYCLE);
 
@@ -179,21 +136,20 @@ void move_vertical(float distance) {
     // move vertical by distance
         // set direction
     if (distance > 0) {
-        gpio_put(XDIR, 1);
+        gpio_put(YDIR, 1);
     }
     else {
-        gpio_put(XDIR, 0);
+        gpio_put(YDIR, 0);
     }
 
     distance = fabsf(distance);
     // step motor
-    int pulses_per_rev = 200; // 1.8 degree with no microstepping
-    int screw_pitch = 2;
-    int total_pulses = (int)((distance / screw_pitch) * pulses_per_rev);
+    int pulses_per_rev = (360 / STEP_ANGLE) * MICROSTEPPING; // 1.8 degree with no microstepping
+    int total_pulses = (int)((distance / LEAD_SCREW_PITCH) * pulses_per_rev);
     for (int i = 0; i < total_pulses; i++) {
-        gpio_put(XSTEP, 1);
+        gpio_put(YSTEP, 1);
         sleep_us(35);
-        gpio_put(XSTEP, 0);
+        gpio_put(YSTEP, 0);
         sleep_us(35);
     }
     sleep_ms(1000);  
@@ -276,22 +232,22 @@ int main() {
                 int rotations = 5;
                 while (true) {
                     // set direction
-                    gpio_put(XDIR, 1);
+                    gpio_put(YDIR, 1);
                     // step motor
                     for (int i = 0; i < (rotations * 3200); i++) {
-                        gpio_put(XSTEP, 1);
+                        gpio_put(YSTEP, 1);
                         sleep_us(35);
-                        gpio_put(XSTEP, 0);
+                        gpio_put(YSTEP, 0);
                         sleep_us(35);
                     }
                     sleep_ms(2000);            
                     
-                    gpio_put(XDIR, 0);
+                    gpio_put(YDIR, 0);
                     // step motor
                     for (int i = 0; i <(rotations* 3200); i++) {
-                        gpio_put(XSTEP, 1);
+                        gpio_put(YSTEP, 1);
                         sleep_us(35);
-                        gpio_put(XSTEP, 0);
+                        gpio_put(YSTEP, 0);
                         sleep_us(35);
                     }
                     sleep_ms(2000);  
@@ -333,9 +289,9 @@ int main() {
                     for (int i = 0; i < 4; i++) {
                         //pulse_width += 0.1f;
                         //for (int i = 0; i < 10; i++) {
-                            gpio_put(XSTEP, 1);
+                            gpio_put(YSTEP, 1);
                             sleep_ms(pulse_width);
-                            gpio_put(XSTEP, 0);
+                            gpio_put(YSTEP, 0);
                             sleep_ms(20 - pulse_width);
                         //}
 
