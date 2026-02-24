@@ -58,6 +58,8 @@ bool candle_status() {
         }
         sleep_ms(10);
     }
+
+    printf("IR count out of 20, intervals of 10 ms: %d\n", ir_count);
     return ir_count > 10;
 
 }
@@ -137,3 +139,9 @@ void extinguish_candle() {
     align_fork(BASE);
     
 }
+
+
+// Missing:
+// - button read? if we use bigger button
+// - buzzer
+// - init timer but dont enable until light sequence

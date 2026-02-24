@@ -48,7 +48,7 @@ void button_gpio_init() {
     // button pin,
     gpio_set_function(BUTTON, GPIO_FUNC_SIO);
     gpio_set_dir(BUTTON, GPIO_IN);
-    gpio_pull_up(BUTTON);
+    //gpio_pull_up(BUTTON);
 }
 
 void gate_driver_pwm_init() {

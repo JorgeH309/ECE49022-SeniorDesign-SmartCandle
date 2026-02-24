@@ -22,14 +22,17 @@ int main() {
 
     if (TEST_MODE == LIVE) {
         while (true) {
-            if (gpio_get(BUTTON) == 0) {
+            if (gpio_get(BUTTON) == 1) {
+                printf("Button pressed!\n");
                 // button pressed
                 // check IR sensor
                 if (candle_status()) {
+                    printf("Candle is lit, extinguishing...\n");
                     // candle is lit, extinguish
                     extinguish_candle();
                 }
                 else {
+                    printf("Candle is not lit, lighting...\n");
                     // candle is not lit, light
                     light_candle();
                 }
@@ -122,8 +125,8 @@ int main() {
             
             float y_distance = 100.0f;
             move_vertical(-y_distance);
-            sleep_ms(20000);
-            move_vertical(y_distance);
+            sleep_ms(3000);
+            move_vertical(+y_distance);
             sleep_ms(2000);
 
         }

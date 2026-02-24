@@ -35,7 +35,7 @@ typedef enum {
 } FORK_POSITION;
 
 // Define Mode and Device for Testing
-#define TEST_MODE SUB_DEMO
+#define TEST_MODE LIVE
 #define DEBUG_DEVICE MOTOR
 
 // Ultrasonic Sensor
@@ -44,7 +44,7 @@ typedef enum {
 
 // Stepper Motors
 #define STEP_ANGLE 1.8f
-#define LEAD_SCREW_PITCH 2 // mm
+#define LEAD_SCREW_PITCH 0.5f // mm
 #define MICROSTEPPING 1
 #define XDIR 4  // INVALID, needs to be changed
 #define XSTEP 3 // INVALID, needs to be changed
@@ -52,7 +52,7 @@ typedef enum {
 #define YSTEP 5 // VALID
 
 // Toggle Button
-#define BUTTON 15 // INVALID, needs to be changed
+#define BUTTON 21 // INVALID, needs to be changed
 
 // IR Sensor
 #define IR_PIN 14 // INVALID, needs to be changed
