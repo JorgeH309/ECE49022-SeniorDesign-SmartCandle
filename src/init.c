@@ -42,6 +42,7 @@ void ir_gpio_init() {
     // IR sensor pin, input
     gpio_set_function(IR_PIN, GPIO_FUNC_SIO);
     gpio_set_dir(IR_PIN, GPIO_IN);
+    gpio_pull_up(IR_PIN);
 }
 
 void button_gpio_init() {

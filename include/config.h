@@ -35,7 +35,7 @@ typedef enum {
 } FORK_POSITION;
 
 // Define Mode and Device for Testing
-#define TEST_MODE LIVE
+#define TEST_MODE SUB_DEMO
 #define DEBUG_DEVICE MOTOR
 
 // Ultrasonic Sensor
@@ -55,7 +55,7 @@ typedef enum {
 #define BUTTON 21 // INVALID, needs to be changed
 
 // IR Sensor
-#define IR_PIN 14 // INVALID, needs to be changed
+#define IR_PIN 7 // VALID
 
 // Gate Driver PWM
 // 150 MHz system clock
