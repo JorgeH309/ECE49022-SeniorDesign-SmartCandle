@@ -7,11 +7,10 @@
 #include "system_utils.h"
 
 // *********** System Utility functions *********** //
-
+#define count 5
 float ultrasonic_reading() {
-    float distance_buffer[20] = {0};
-
-    for (int i = 0; i < 20; i++) {
+    float distance_buffer[count] = {0};
+    for (int i = 0; i < count; i++) {
         // send 10us pulse to TRIG
         gpio_put(TRIG, 1);
         sleep_us(10);
@@ -41,11 +40,11 @@ float ultrasonic_reading() {
 
     // find average distance
     float sum = 0;
-    for (int i = 0; i < 20; i++) {
+    for (int i = 0; i < count; i++) {
         sum += distance_buffer[i];
     }
 
-    float average_distance = sum / 20.0f;
+    float average_distance = sum / count;
     return average_distance;
 
 }

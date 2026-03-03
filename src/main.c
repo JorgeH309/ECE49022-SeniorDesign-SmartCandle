@@ -132,13 +132,14 @@ int main() {
                     printf("Candle is not lit.\n");
                 }
                 float distance_read = ultrasonic_reading();
-                
-                float y_distance = 100.0f;
+                printf("Finished US reading\n");
+                float y_distance = 100.0f; //mm
                 move_vertical(-y_distance);
                 sleep_ms(3000);
-
+                printf("Almost done\n");
                 move_vertical(+y_distance);
                 sleep_ms(2000);
+                printf("Done\n");
 
             }
         }
