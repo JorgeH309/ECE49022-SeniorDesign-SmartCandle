@@ -19,6 +19,7 @@ int main() {
     motor_gpio_init();
     ir_gpio_init();
     gate_driver_pwm_init();
+    speaker_pwm_init();
 
     if (TEST_MODE == LIVE) {
         while (true) {

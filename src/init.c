@@ -63,3 +63,16 @@ void gate_driver_pwm_init() {
     //pwm_set_enabled(slice_num, true);
 
 }
+
+
+void speaker_pwm_init() {
+    
+    gpio_set_function(SPEAKER_PWM, GPIO_FUNC_PWM);
+    uint slice_num = pwm_gpio_to_slice_num(SPEAKER_PWM);
+    pwm_set_clkdiv(slice_num, SPEAKER_CLOCK_DIVIDER);
+    pwm_set_wrap(slice_num, SPEAKER_PERIOD - 1);
+    pwm_set_chan_level(slice_num, PWM_CHAN_A, SPEAKER_DUTY_CYCLE);
+
+    pwm_set_enabled(slice_num, true);
+
+}
