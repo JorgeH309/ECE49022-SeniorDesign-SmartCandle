@@ -46,13 +46,13 @@ typedef enum {
 #define STEP_ANGLE 1.8f
 #define LEAD_SCREW_PITCH 0.5f // mm
 #define MICROSTEPPING 1
-#define XDIR 6  // INVALID, needs to be changed
-#define XSTEP 5 // INVALID, needs to be changed
+#define XDIR 6  // VALID
+#define XSTEP 5 // VALID
 #define YDIR 9  // VALID
 #define YSTEP 8 // VALID
 
 // Toggle Button
-#define BUTTON 21 // INVALID, needs to be changed
+#define BUTTON 21 // VALID
 
 // IR Sensor
 #define IR_PIN 7 // VALID

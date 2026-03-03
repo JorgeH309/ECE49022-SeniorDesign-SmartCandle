@@ -123,25 +123,24 @@ int main() {
         while (true) {
             //float y_distance = ultrasonic_reading() * 100;
             //printf("Retrieved distance: %.2f mm\n", y_distance);
-            if(candle_status()) {
-                printf("Candle is lit\n");
-            }
-            else {
-                printf("Candle is not lit.\n");
-            }
-            float y_distance = 100.0f;
-            move_vertical(-y_distance);
-            sleep_ms(3000);
+            if (gpio_get(BUTTON) == 1) {
 
-            if(candle_status()) {
-                printf("Candle is lit\n");
-            }
-            else {
-                printf("Candle is not lit.\n");
-            }
-            move_vertical(+y_distance);
-            sleep_ms(2000);
+                if(candle_status()) {
+                    printf("Candle is lit\n");
+                }
+                else {
+                    printf("Candle is not lit.\n");
+                }
+                float distance_read = ultrasonic_reading();
+                
+                float y_distance = 100.0f;
+                move_vertical(-y_distance);
+                sleep_ms(3000);
 
+                move_vertical(+y_distance);
+                sleep_ms(2000);
+
+            }
         }
     }
 }
