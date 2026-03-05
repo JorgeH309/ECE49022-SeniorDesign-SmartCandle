@@ -63,29 +63,26 @@ bool candle_status() {
 
 }
 
-void align_fork(FORK_POSITION position) {
-    // move fork to position
-    switch(position) {
-        case LIGHT:
-            // move to light position
-            break;
-        case SNUFF:
-            // move to snuff position
-            break;
-        case BASE:
-            // move to base position
-            break;
-    }
-}
+void move_motor(float distance, bool axis) {
+    uint dir_pin;
+    uint step_pin;
 
-void move_vertical(float distance) {
+    // axis = true for Y, false for X
+    if (axis) {
+        dir_pin = YDIR;
+        step_pin = YSTEP;
+    }
+    else {
+        dir_pin = XDIR;
+        step_pin = XSTEP;
+    }
     // move vertical by distance
         // set direction
     if (distance > 0) {
-        gpio_put(YDIR, 1);
+        gpio_put(dir_pin, 1);
     }
     else {
-        gpio_put(YDIR, 0);
+        gpio_put(dir_pin, 0);
     }
 
     distance = fabsf(distance);
@@ -93,9 +90,9 @@ void move_vertical(float distance) {
     int pulses_per_rev = (360 / STEP_ANGLE) * MICROSTEPPING; // 1.8 degree with no microstepping
     int total_pulses = (int)((distance / LEAD_SCREW_PITCH) * pulses_per_rev);
     for (int i = 0; i < total_pulses; i++) {
-        gpio_put(YSTEP, 1);
+        gpio_put(step_pin, 1);
         sleep_us(35);
-        gpio_put(YSTEP, 0);
+        gpio_put(step_pin, 0);
         sleep_us(35);
     }
     sleep_ms(1000);  
@@ -111,13 +108,13 @@ void light_candle() {
     // move motor Y back
     // move motor X back
     float y_distance = ultrasonic_reading();
-    align_fork(LIGHT);
+    move_motor(LIGHT, false);
     pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), true);
-    move_vertical(y_distance);
+    move_motor(y_distance, true);
     sleep_ms(3000);
     pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), false);
-    move_vertical(-y_distance);
-    align_fork(BASE);
+    move_motor(-y_distance, true);
+    move_motor(-LIGHT, false);
 
 }
 
@@ -131,11 +128,11 @@ void extinguish_candle() {
     // move motor Y back
     // move motor X back
     float y_distance = ultrasonic_reading();
-    align_fork(SNUFF);
-    move_vertical(y_distance);
+    move_motor(SNUFF, false);
+    move_motor(y_distance, true);
     sleep_ms(3000);
-    move_vertical(-y_distance);
-    align_fork(BASE);
+    move_motor(-y_distance, true);
+    move_motor(-SNUFF, false);
     
 }
 

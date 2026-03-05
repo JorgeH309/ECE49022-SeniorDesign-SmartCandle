@@ -28,11 +28,8 @@ typedef enum {
 // ===============================
 // Fork Horizontal Movement Selection
 // ===============================
-typedef enum {
-    LIGHT,
-    SNUFF,
-    BASE
-} FORK_POSITION;
+#define LIGHT 5.0f
+#define SNUFF -5.0f
 
 // Define Mode and Device for Testing
 #define TEST_MODE SUB_DEMO

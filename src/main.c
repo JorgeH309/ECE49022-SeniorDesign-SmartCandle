@@ -134,11 +134,19 @@ int main() {
                 float distance_read = ultrasonic_reading();
                 printf("Finished US reading\n");
                 float y_distance = 100.0f; //mm
-                move_vertical(-y_distance);
+                
+                // axis = true for Y, false for X
+                move_motor(-y_distance, true); 
                 sleep_ms(3000);
+                
+                // axis is false for X
+                move_motor(LIGHT, false);
+
                 printf("Almost done\n");
-                move_vertical(+y_distance);
+                move_motor(+y_distance, true);
                 sleep_ms(2000);
+                move_motor(-LIGHT, false);
+
                 printf("Done\n");
 
             }
