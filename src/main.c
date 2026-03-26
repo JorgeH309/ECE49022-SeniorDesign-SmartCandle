@@ -20,6 +20,7 @@ int main() {
     ir_gpio_init();
     gate_driver_pwm_init();
     speaker_pwm_init();
+    servo_gpio_init();
 
     if (TEST_MODE == LIVE) {
         while (true) {
@@ -100,19 +101,34 @@ int main() {
                 break;
             case SERVO:
                 printf("Testing servo...\n");
-                while (true) {
-                    float pulse_width =10.0f;
-                    for (int i = 0; i < 4; i++) {
-                        //pulse_width += 0.1f;
-                        //for (int i = 0; i < 10; i++) {
-                            gpio_put(YSTEP, 1);
-                            sleep_ms(pulse_width);
-                            gpio_put(YSTEP, 0);
-                            sleep_ms(20 - pulse_width);
-                        //}
 
+
+                while (true) {
+                    move_servo(LIGHT_DUTY_CYCLE);
+                    sleep_ms(1000);
+                    move_servo(NEUTRAL_DUTY_CYCLE);
+                    sleep_ms(1000);
+                    move_servo(SNUFF_DUTY_CYCLE);
+                    sleep_ms(1000);
+                    move_servo(NEUTRAL_DUTY_CYCLE);
+                    sleep_ms(1000);
+                }
+                uint slice_num = pwm_gpio_to_slice_num(SERVO_PIN);
+
+                while (true) {
+                    for (int i = 500; i < 2500; i++) {
+                        pwm_set_chan_level(slice_num, PWM_CHAN_A, i);
+                        //pwm_set_enabled(slice_num, true);
+                        sleep_ms(20);
                     }
-                    sleep_ms(2000);
+                    sleep_ms(1000);
+
+                    for (int i = 2500; i < 500; i--) {
+                        pwm_set_chan_level(slice_num, PWM_CHAN_A, i);
+                        //pwm_set_enabled(slice_num, true);
+                        sleep_ms(20);
+                    }
+                    sleep_ms(1000);
                 }
                 break;
         }
@@ -136,16 +152,16 @@ int main() {
                 float y_distance = 100.0f; //mm
                 
                 // axis = true for Y, false for X
-                move_motor(-y_distance, true); 
+                move_motor(-y_distance); 
                 sleep_ms(3000);
                 
                 // axis is false for X
-                move_motor(LIGHT, false);
+                //move_motor(LIGHT); move horizontal with servo
 
                 printf("Almost done\n");
-                move_motor(+y_distance, true);
+                move_motor(+y_distance);
                 sleep_ms(2000);
-                move_motor(-LIGHT, false);
+                //move_motor(-LIGHT, false); move horizontal with servo
 
                 printf("Done\n");
 

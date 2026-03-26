@@ -7,5 +7,6 @@ void ir_gpio_init(void);
 void button_gpio_init(void);
 void gate_driver_pwm_init(void);
 void speaker_pwm_init(void);
+void servo_gpio_init(void);
 
 #endif

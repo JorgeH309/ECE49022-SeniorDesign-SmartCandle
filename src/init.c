@@ -21,12 +21,12 @@ void us_gpio_init() {
 
 void motor_gpio_init() {
     //DIR pin, output
-    gpio_set_function(XDIR, GPIO_FUNC_SIO);
-    gpio_set_dir(XDIR, GPIO_OUT);
+    //gpio_set_function(XDIR, GPIO_FUNC_SIO);
+    //gpio_set_dir(XDIR, GPIO_OUT);
 
     //STEP pin, output
-    gpio_set_function(XSTEP, GPIO_FUNC_SIO);
-    gpio_set_dir(XSTEP, GPIO_OUT);
+    //gpio_set_function(XSTEP, GPIO_FUNC_SIO);
+    //gpio_set_dir(XSTEP, GPIO_OUT);
 
 
         //DIR pin, output
@@ -75,4 +75,14 @@ void speaker_pwm_init() {
 
     pwm_set_enabled(slice_num, true);
 
+}
+
+void servo_gpio_init() {
+    gpio_set_function(SERVO_PIN, GPIO_FUNC_PWM);
+    uint slice_num = pwm_gpio_to_slice_num(SERVO_PIN);
+    pwm_set_clkdiv(slice_num, SERVO_CLOCK_DIVIDER);
+    pwm_set_wrap(slice_num, SERVO_PERIOD - 1);
+    pwm_set_chan_level(slice_num, PWM_CHAN_A, NEUTRAL_DUTY_CYCLE);
+
+    pwm_set_enabled(slice_num, true);
 }

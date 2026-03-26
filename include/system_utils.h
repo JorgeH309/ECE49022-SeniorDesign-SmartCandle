@@ -5,7 +5,8 @@
 
 float ultrasonic_reading(void);
 bool candle_status(void);
-void move_motor(float distance, bool axis);
+void move_motor(float distance);
 void light_candle(void);
 void extinguish_candle(void);
+void move_servo(float duty_cycle);
 #endif

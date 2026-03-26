@@ -25,15 +25,9 @@ typedef enum {
     SERVO
 } COMPONENTS;
 
-// ===============================
-// Fork Horizontal Movement Selection
-// ===============================
-#define LIGHT 5.0f
-#define SNUFF -5.0f
-
 // Define Mode and Device for Testing
-#define TEST_MODE SUB_DEMO
-#define DEBUG_DEVICE ULTRASONIC
+#define TEST_MODE DEBUG
+#define DEBUG_DEVICE SERVO
 
 // Ultrasonic Sensor
 #define TRIG 11 // VALID
@@ -43,8 +37,8 @@ typedef enum {
 #define STEP_ANGLE 1.8f
 #define LEAD_SCREW_PITCH 0.5f // mm
 #define MICROSTEPPING 1
-#define XDIR 6  // VALID
-#define XSTEP 5 // VALID
+//#define XDIR 6  // VALID
+//#define XSTEP 5 // VALID
 #define YDIR 9  // VALID
 #define YSTEP 8 // VALID
 
@@ -66,6 +60,21 @@ typedef enum {
 #define SPEAKER_CLOCK_DIVIDER 1500
 #define SPEAKER_PERIOD 200
 #define SPEAKER_DUTY_CYCLE 100
+
+
+// Servo Motor
+#define SERVO_PIN 6 // VALID
+#define SERVO_CLOCK_DIVIDER 150
+#define SERVO_PERIOD 10000
+#define NEUTRAL_DUTY_CYCLE 1500
+
+
+// ===============================
+// Fork Horizontal Movement Selection
+// ===============================
+#define LIGHT_DUTY_CYCLE 1093 
+#define SNUFF_DUTY_CYCLE 1907
+
 #endif
 
 // just use pin numbers directly on board

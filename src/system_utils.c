@@ -63,19 +63,13 @@ bool candle_status() {
 
 }
 
-void move_motor(float distance, bool axis) {
+void move_motor(float distance) {
     uint dir_pin;
     uint step_pin;
 
     // axis = true for Y, false for X
-    if (axis) {
-        dir_pin = YDIR;
-        step_pin = YSTEP;
-    }
-    else {
-        dir_pin = XDIR;
-        step_pin = XSTEP;
-    }
+    dir_pin = YDIR;
+    step_pin = YSTEP;
     // move vertical by distance
         // set direction
     if (distance > 0) {
@@ -108,13 +102,13 @@ void light_candle() {
     // move motor Y back
     // move motor X back
     float y_distance = ultrasonic_reading();
-    move_motor(LIGHT, false);
+    //move_motor(LIGHT, false);
     pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), true);
-    move_motor(y_distance, true);
+    //move_motor(y_distance, true);
     sleep_ms(3000);
     pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), false);
-    move_motor(-y_distance, true);
-    move_motor(-LIGHT, false);
+    //move_motor(-y_distance, true);
+    //move_motor(-LIGHT, false);
 
 }
 
@@ -128,14 +122,19 @@ void extinguish_candle() {
     // move motor Y back
     // move motor X back
     float y_distance = ultrasonic_reading();
-    move_motor(SNUFF, false);
-    move_motor(y_distance, true);
+    //move_motor(SNUFF, false);
+    //move_motor(y_distance, true);
     sleep_ms(3000);
-    move_motor(-y_distance, true);
-    move_motor(-SNUFF, false);
+    //move_motor(-y_distance, true);
+    //move_motor(-SNUFF, false);
     
 }
 
+//
+void move_servo(float duty_cycle) {
+    uint slice_num = pwm_gpio_to_slice_num(SERVO_PIN);
+    pwm_set_chan_level(slice_num, PWM_CHAN_A, duty_cycle);
+}
 
 // Missing:
 // - button read? if we use bigger button
