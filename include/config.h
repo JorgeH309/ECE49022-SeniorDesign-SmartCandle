@@ -22,12 +22,18 @@ typedef enum {
 typedef enum {
     MOTOR,
     ULTRASONIC,
-    SERVO
+    SERVO,
+    HORIZ_STEPPER
 } COMPONENTS;
 
+typedef enum {
+    SNUFFER,
+    LIGHTER
+} FORK;
+
 // Define Mode and Device for Testing
-#define TEST_MODE DEBUG
-#define DEBUG_DEVICE SERVO
+#define TEST_MODE DEBUG 
+#define DEBUG_DEVICE MOTOR
 
 // Ultrasonic Sensor
 #define TRIG 11 // VALID
@@ -68,7 +74,9 @@ typedef enum {
 #define SERVO_PERIOD 10000
 #define NEUTRAL_DUTY_CYCLE 1500
 
-
+// Horizontal Stepper
+#define XDIR 6  // VALID
+#define XSTEP 5 // VALID
 // ===============================
 // Fork Horizontal Movement Selection
 // ===============================

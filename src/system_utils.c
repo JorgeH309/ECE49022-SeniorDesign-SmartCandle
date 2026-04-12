@@ -45,24 +45,65 @@ float ultrasonic_reading() {
     }
 
     float average_distance = sum / count;
+    printf("Average Distance: %.2f cm\n", average_distance);
     return average_distance;
 
 }
 
 bool candle_status() {
-    int ir_count = 0;
+    int ir_count;
+
+    ir_count = 0;
     for (int i = 0; i < 20; i++) {
-        if (gpio_get(IR_PIN) == 1) {
+        if (gpio_get(IR_PIN) == 0) {
             ir_count++;
         }
         sleep_ms(10);
     }
 
     printf("IR count out of 20, intervals of 10 ms: %d\n", ir_count);
+    sleep_ms(1000);
     return ir_count > 10;
 
 }
 
+void move_stepper_horiz(FORK fork, bool out) {
+    uint dir_pin;
+    uint step_pin;
+
+    dir_pin = YDIR;
+    step_pin = YSTEP;
+    // move horizontal by constant distance
+
+    int degrees = 50;
+    // set direction
+    if (fork == LIGHTER) {
+        if (out) {
+            gpio_put(dir_pin, 1);
+        }
+        else {
+            gpio_put(dir_pin, 0);
+        }
+    }
+    else {
+        if (out) {
+            gpio_put(dir_pin, 0);
+        }
+        else {
+            gpio_put(dir_pin, 1);
+        }
+    }
+
+    // step motor
+    int pulses_to_move = 100 * (degrees / STEP_ANGLE) * MICROSTEPPING; // 1.8 degree with no microstepping
+    for (int i = 0; i < pulses_to_move; i++) {
+        gpio_put(step_pin, 1);
+        sleep_us(35);
+        gpio_put(step_pin, 0);
+        sleep_us(35);
+    }
+
+}
 void move_motor(float distance) {
     uint dir_pin;
     uint step_pin;
@@ -79,7 +120,7 @@ void move_motor(float distance) {
         gpio_put(dir_pin, 0);
     }
 
-    distance = fabsf(distance);
+    distance = fabsf(distance) * 10;
     // step motor
     int pulses_per_rev = (360 / STEP_ANGLE) * MICROSTEPPING; // 1.8 degree with no microstepping
     int total_pulses = (int)((distance / LEAD_SCREW_PITCH) * pulses_per_rev);
@@ -92,6 +133,8 @@ void move_motor(float distance) {
     sleep_ms(1000);  
 }
 
+float prev_distance = 0.0f;
+
 void light_candle() {
     // read US sensor for Y
     // move motor X by constant amount
@@ -101,14 +144,18 @@ void light_candle() {
     // disable PWM
     // move motor Y back
     // move motor X back
-    float y_distance = ultrasonic_reading();
-    //move_motor(LIGHT, false);
+    float y_distance = ultrasonic_reading() - 7.0f;
+    //y_distance = 10.0f;
+    move_servo(LIGHT_DUTY_CYCLE);
     pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), true);
-    //move_motor(y_distance, true);
-    sleep_ms(3000);
+    sleep_ms(2000);
+    move_motor(y_distance);
+    sleep_ms(2000);
     pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), false);
-    //move_motor(-y_distance, true);
-    //move_motor(-LIGHT, false);
+    move_motor(-y_distance);
+    sleep_ms(2000);
+    move_servo(NEUTRAL_DUTY_CYCLE);
+    prev_distance = y_distance;
 
 }
 
@@ -121,13 +168,31 @@ void extinguish_candle() {
     // disable PWM
     // move motor Y back
     // move motor X back
-    float y_distance = ultrasonic_reading();
-    //move_motor(SNUFF, false);
-    //move_motor(y_distance, true);
-    sleep_ms(3000);
-    //move_motor(-y_distance, true);
-    //move_motor(-SNUFF, false);
+    float y_distance = ultrasonic_reading() - 7.0f;
+
+    if (prev_distance != 0.0f) {
+        y_distance = prev_distance;
+    }
     
+
+    move_servo(SNUFF_DUTY_CYCLE);
+    sleep_ms(2000);
+    move_motor(y_distance);
+    sleep_ms(2000);
+    move_motor(-y_distance);
+
+    float temp = y_distance;
+    while (candle_status()) {
+        printf("Candle is still lit, trying again...\n");
+        temp += 0.25f;
+        sleep_ms(1000);
+        move_motor(temp);
+        sleep_ms(2000);
+        move_motor(-temp);
+    }
+
+    sleep_ms(2000);
+    move_servo(NEUTRAL_DUTY_CYCLE);
 }
 
 //
@@ -140,3 +205,8 @@ void move_servo(float duty_cycle) {
 // - button read? if we use bigger button
 // - buzzer
 // - init timer but dont enable until light sequence
+
+
+// add constraints to how far you can go down (no go past 16); base is static high
+// save distance from lightng to compare when snuffing, maybe light affects distance reading
+// if not turned on or off when told, have loop that tries again, adds some partial distance

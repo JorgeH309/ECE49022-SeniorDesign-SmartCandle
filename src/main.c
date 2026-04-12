@@ -12,7 +12,12 @@ int main() {
     // Configures our microcontroller to 
     // communicate over UART through the TX/RX pins
     stdio_init_all();
-
+    /*
+    while (true) {
+        printf("Testing\n");
+        sleep_ms(1000);
+    }
+    */
     // Intialize all componens
     button_gpio_init();
     us_gpio_init();
@@ -44,8 +49,11 @@ int main() {
     else if (TEST_MODE == DEBUG) {
 
         switch(DEBUG_DEVICE) {
+            printf("Debug mode\n");
             case MOTOR:
                 printf("Testing motor...\n");
+
+                /*
                 int rotations = 5;
                 while (true) {
                     // set direction
@@ -68,8 +76,14 @@ int main() {
                         sleep_us(35);
                     }
                     sleep_ms(2000);  
-                }
+                }*/
 
+                while (true) {
+                    move_motor(5.0f);
+                    sleep_ms(2000);
+                    move_motor(-5.0f);
+                    sleep_ms(2000);
+                }
                 break;
 
             case ULTRASONIC:
@@ -92,9 +106,9 @@ int main() {
 
                     // find distance, speed of sound = 343 m/s or 0.0343 cm/us
                     // dis = (duration in us) * (speed of sound cm/us) / 2
-                    float distance = ((duration * 0.0343f) / 2.0f) / 2.54f;;
+                    float distance = ((duration * 0.0343f) / 2.0f);;
 
-                    printf("Distance: %.2f in\n", distance);
+                    printf("Distance: %.2f cm\n", distance);
 
                     sleep_ms(500);
                 }
@@ -130,6 +144,28 @@ int main() {
                     }
                     sleep_ms(1000);
                 }
+                break;
+            case HORIZ_STEPPER:
+
+                while (true) {
+                    move_motor(10.0f);
+                    sleep_ms(2000);
+                    move_motor(-10.0f);
+                    sleep_ms(2000);
+                }
+                /*
+                printf("Testing horizontal stepper...\n");
+                while (true) {
+                    move_stepper_horiz(LIGHTER, true);
+                    sleep_ms(2000);
+                    move_stepper_horiz(LIGHTER, false);
+                    sleep_ms(2000);
+                    move_stepper_horiz(SNUFFER, true);
+                    sleep_ms(2000);
+                    move_stepper_horiz(SNUFFER, false);
+                    sleep_ms(2000);
+                }
+                */
                 break;
         }
     }
