@@ -9,13 +9,23 @@
 
 
 int main() {
+
     // Configures our microcontroller to 
     // communicate over UART through the TX/RX pins
     stdio_init_all();
     /*
+    struct repeating_timer timer;
+    
     while (true) {
-        printf("Testing\n");
-        sleep_ms(1000);
+        add_repeating_timer_ms(2000, repeating_timer_callback, NULL, &timer);
+
+        sleep_ms(3000);
+
+        bool cancelled = cancel_repeating_timer(&timer);
+        printf("Timer cancelled: %d\n", cancelled);
+        sleep_ms(3000);
+        printf("End of while\n");
+
     }
     */
     // Intialize all componens
@@ -79,9 +89,9 @@ int main() {
                 }*/
 
                 while (true) {
-                    move_motor(5.0f);
+                    move_motor(2.0f);
                     sleep_ms(2000);
-                    move_motor(-5.0f);
+                    move_motor(-2.0f);
                     sleep_ms(2000);
                 }
                 break;
@@ -115,8 +125,9 @@ int main() {
                 break;
             case SERVO:
                 printf("Testing servo...\n");
-
-
+                
+                move_servo(SNUFF_DUTY_CYCLE);
+                sleep_ms(1000000);
                 while (true) {
                     move_servo(LIGHT_DUTY_CYCLE);
                     sleep_ms(1000);
@@ -167,6 +178,21 @@ int main() {
                 }
                 */
                 break;
+            case GATE_DRIVER:
+                printf("Testing gate driver PWM...\n");
+                sleep_ms(10000);
+                pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), true);
+
+                while(true) {
+                    printf("Turn on\n");
+                    pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, DUTY_CYCLE);
+
+                    sleep_ms(4000);
+                    pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, 0);
+                    //pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), false);
+                    printf("Turn off\n");
+                    sleep_ms(10000);
+                }
         }
     }
 

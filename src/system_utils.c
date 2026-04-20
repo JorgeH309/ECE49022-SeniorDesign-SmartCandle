@@ -62,7 +62,7 @@ bool candle_status() {
     }
 
     printf("IR count out of 20, intervals of 10 ms: %d\n", ir_count);
-    sleep_ms(1000);
+    //sleep_ms(1000);
     return ir_count > 10;
 
 }
@@ -114,9 +114,11 @@ void move_motor(float distance) {
     // move vertical by distance
         // set direction
     if (distance > 0) {
+        printf("high\n");
         gpio_put(dir_pin, 1);
     }
     else {
+        printf("low\n");
         gpio_put(dir_pin, 0);
     }
 
@@ -130,33 +132,92 @@ void move_motor(float distance) {
         gpio_put(step_pin, 0);
         sleep_us(35);
     }
-    sleep_ms(1000);  
+   //sleep_ms(1000);  
+}
+
+bool repeating_timer_callback(__unused struct repeating_timer *t) {
+    
+    if (candle_status()){
+        pwm_set_chan_level(pwm_gpio_to_slice_num(SPEAKER_PWM), PWM_CHAN_B, SPEAKER_DUTY_CYCLE);
+        extinguish_candle();
+        pwm_set_chan_level(pwm_gpio_to_slice_num(SPEAKER_PWM), PWM_CHAN_B, 0);
+        
+    };
+    printf("in timer callback\n");
+
+    return true;
 }
 
 float prev_distance = 0.0f;
+
+struct repeating_timer timer;
 
 void light_candle() {
     // read US sensor for Y
     // move motor X by constant amount
     // enable PWM for gate driver to light candle
     // move motor Y by Y
-    // hold 3 seconds
+    // hold 2 seconds
     // disable PWM
     // move motor Y back
     // move motor X back
-    float y_distance = ultrasonic_reading() - 7.0f;
-    //y_distance = 10.0f;
+
+    bool cancelled = cancel_repeating_timer(&timer);
+
+    float y_distance = 0.0f;
+    //top level check
+    float top_y_dist = ultrasonic_reading();
+    while (top_y_dist > HEIGHT_LIMIT) {
+        printf("Height limit exceeded.\n");
+        top_y_dist = ultrasonic_reading();
+    }
+    //sleep_ms(2000);
+    move_motor(5.0f); // move to postion 2
+    printf("Moved to position 2\n");
+    float pos2_y_dist = ultrasonic_reading() + 5.0f;
+    while (pos2_y_dist > HEIGHT_LIMIT) {
+        printf("Height limit exceeded.\n");
+        pos2_y_dist = ultrasonic_reading() + 5.0f;
+    }
+
     move_servo(LIGHT_DUTY_CYCLE);
-    pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), true);
+    //pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), true);
+    pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, DUTY_CYCLE);
     sleep_ms(2000);
-    move_motor(y_distance);
-    sleep_ms(2000);
-    pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), false);
-    move_motor(-y_distance);
+    if (top_y_dist < pos2_y_dist) {
+        y_distance = top_y_dist;
+        move_motor(top_y_dist - 5.0f - LIGHT_HEIGHT_OFFSET);
+    }
+    else {
+        y_distance = pos2_y_dist;
+        move_motor(pos2_y_dist - 5.0f - LIGHT_HEIGHT_OFFSET);
+    }
+
+    sleep_ms(1000);
+    
+    pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, 0);
+
+
+    float temp = y_distance - LIGHT_HEIGHT_OFFSET;
+
+    move_motor(-temp);
+    
+    while (!candle_status()) {
+        printf("Candle is still not lit, trying again...\n");
+        temp += 0.5f;
+        //sleep_ms(1000);
+        pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, DUTY_CYCLE);
+
+        move_motor(temp);
+        sleep_ms(1000);
+        pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, 0);
+        move_motor(-temp);
+    }
     sleep_ms(2000);
     move_servo(NEUTRAL_DUTY_CYCLE);
-    prev_distance = y_distance;
+    prev_distance = temp + LIGHT_HEIGHT_OFFSET;
 
+    add_repeating_timer_ms(10000, repeating_timer_callback, NULL, &timer);
 }
 
 void extinguish_candle() {
@@ -164,36 +225,48 @@ void extinguish_candle() {
     // move motor X by constant amount
     // enable PWM for gate driver to extinguish candle
     // move motor Y by Y
-    // hold 3 seconds
+    // hold 2 seconds
     // disable PWM
     // move motor Y back
     // move motor X back
-    float y_distance = ultrasonic_reading() - 7.0f;
+    /*
+    float y_distance = ultrasonic_reading() - SNUFF_HEIGHT_OFFSET;
 
     if (prev_distance != 0.0f) {
         y_distance = prev_distance;
     }
-    
+    */
 
+    bool cancelled = cancel_repeating_timer(&timer);
+
+    float y_distance = prev_distance - SNUFF_HEIGHT_OFFSET;
+    
     move_servo(SNUFF_DUTY_CYCLE);
     sleep_ms(2000);
     move_motor(y_distance);
     sleep_ms(2000);
-    move_motor(-y_distance);
+    move_motor(-5.0f);
 
-    float temp = y_distance;
+    float temp = 5.0f;
+    
     while (candle_status()) {
         printf("Candle is still lit, trying again...\n");
-        temp += 0.25f;
-        sleep_ms(1000);
+        temp += 0.5f;
+        //sleep_ms(1000);
         move_motor(temp);
         sleep_ms(2000);
         move_motor(-temp);
     }
 
-    sleep_ms(2000);
+    move_motor(-(y_distance - temp));
+
+    sleep_ms(1000);
     move_servo(NEUTRAL_DUTY_CYCLE);
+
+    add_repeating_timer_ms(10000, repeating_timer_callback, NULL, &timer);
+
 }
+
 
 //
 void move_servo(float duty_cycle) {

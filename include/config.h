@@ -23,7 +23,8 @@ typedef enum {
     MOTOR,
     ULTRASONIC,
     SERVO,
-    HORIZ_STEPPER
+    HORIZ_STEPPER,
+    GATE_DRIVER
 } COMPONENTS;
 
 typedef enum {
@@ -32,7 +33,7 @@ typedef enum {
 } FORK;
 
 // Define Mode and Device for Testing
-#define TEST_MODE DEBUG 
+#define TEST_MODE LIVE 
 #define DEBUG_DEVICE MOTOR
 
 // Ultrasonic Sensor
@@ -45,7 +46,7 @@ typedef enum {
 #define MICROSTEPPING 1
 //#define XDIR 6  // VALID
 //#define XSTEP 5 // VALID
-#define YDIR 9  // VALID
+#define YDIR 10  // VALID
 #define YSTEP 8 // VALID
 
 // Toggle Button
@@ -59,7 +60,7 @@ typedef enum {
 #define GATE_PWM 18 // VALID
 #define CLOCK_DIVIDER 150
 #define PERIOD 10000
-#define DUTY_CYCLE 5000
+#define DUTY_CYCLE 9000
 
 
 #define SPEAKER_PWM 17 // VALID
@@ -68,21 +69,24 @@ typedef enum {
 #define SPEAKER_DUTY_CYCLE 100
 
 
-// Servo Motor
+// Servo Motor 6 is a A channel, 5 is B page 1078
 #define SERVO_PIN 6 // VALID
 #define SERVO_CLOCK_DIVIDER 150
 #define SERVO_PERIOD 10000
 #define NEUTRAL_DUTY_CYCLE 1500
 
 // Horizontal Stepper
-#define XDIR 6  // VALID
-#define XSTEP 5 // VALID
+//#define XDIR 6  // VALID
+//#define XSTEP 5 // VALID
 // ===============================
 // Fork Horizontal Movement Selection
 // ===============================
 #define LIGHT_DUTY_CYCLE 1093 
 #define SNUFF_DUTY_CYCLE 1907
 
+#define SNUFF_HEIGHT_OFFSET 4.0f
+#define LIGHT_HEIGHT_OFFSET 4.5f
+#define HEIGHT_LIMIT 17.0f
 #endif
 
 // just use pin numbers directly on board

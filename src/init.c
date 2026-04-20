@@ -29,7 +29,7 @@ void motor_gpio_init() {
     //gpio_set_dir(XSTEP, GPIO_OUT);
 
 
-        //DIR pin, output
+    //DIR pin, output
     gpio_set_function(YDIR, GPIO_FUNC_SIO);
     gpio_set_dir(YDIR, GPIO_OUT);
 
@@ -58,9 +58,9 @@ void gate_driver_pwm_init() {
     uint slice_num = pwm_gpio_to_slice_num(GATE_PWM);
     pwm_set_clkdiv(slice_num, CLOCK_DIVIDER);
     pwm_set_wrap(slice_num, PERIOD - 1);
-    pwm_set_chan_level(slice_num, PWM_CHAN_A, DUTY_CYCLE);
+    pwm_set_chan_level(slice_num, PWM_CHAN_A, 0);
 
-    //pwm_set_enabled(slice_num, true);
+    pwm_set_enabled(slice_num, true);
 
 }
 
@@ -71,7 +71,7 @@ void speaker_pwm_init() {
     uint slice_num = pwm_gpio_to_slice_num(SPEAKER_PWM);
     pwm_set_clkdiv(slice_num, SPEAKER_CLOCK_DIVIDER);
     pwm_set_wrap(slice_num, SPEAKER_PERIOD - 1);
-    pwm_set_chan_level(slice_num, PWM_CHAN_B, SPEAKER_DUTY_CYCLE);
+    pwm_set_chan_level(slice_num, PWM_CHAN_B, 0);
 
     pwm_set_enabled(slice_num, true);
 
