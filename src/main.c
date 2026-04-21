@@ -7,12 +7,21 @@
 #include "init.h"
 #include "system_utils.h"
 
-
 int main() {
-
     // Configures our microcontroller to 
     // communicate over UART through the TX/RX pins
     stdio_init_all();
+
+    sleep_ms(3000);
+    /*
+    printf("Starting timer\n");
+    struct repeating_timer timer;
+
+    add_repeating_timer_ms(500, repeating_timer_callback, NULL, &timer );
+    sleep_ms(3000);
+    bool cancelled = cancel_repeating_timer(&timer);
+    sleep_ms(2000);
+    */
     /*
     struct repeating_timer timer;
     
@@ -52,6 +61,17 @@ int main() {
                     printf("Candle is not lit, lighting...\n");
                     // candle is not lit, light
                     light_candle();
+                }
+            }
+
+            if (check_flag) {
+                check_flag = false;
+                printf("Checking in main\n");
+                if (candle_status()){
+                    pwm_set_chan_level(pwm_gpio_to_slice_num(SPEAKER_PWM), PWM_CHAN_B, SPEAKER_DUTY_CYCLE);
+                    extinguish_candle(); // this will cancel and reactive timer
+                    pwm_set_chan_level(pwm_gpio_to_slice_num(SPEAKER_PWM), PWM_CHAN_B, 0);
+                    printf("Finished extinguishing after lit detected in timer\n");
                 }
             }
         }

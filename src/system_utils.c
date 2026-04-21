@@ -51,6 +51,7 @@ float ultrasonic_reading() {
 }
 
 bool candle_status() {
+    //printf("entered candle status\n");
     int ir_count;
 
     ir_count = 0;
@@ -114,11 +115,9 @@ void move_motor(float distance) {
     // move vertical by distance
         // set direction
     if (distance > 0) {
-        printf("high\n");
         gpio_put(dir_pin, 1);
     }
     else {
-        printf("low\n");
         gpio_put(dir_pin, 0);
     }
 
@@ -135,15 +134,16 @@ void move_motor(float distance) {
    //sleep_ms(1000);  
 }
 
+
+volatile bool check_flag = false;
+
 bool repeating_timer_callback(__unused struct repeating_timer *t) {
     
-    if (candle_status()){
-        pwm_set_chan_level(pwm_gpio_to_slice_num(SPEAKER_PWM), PWM_CHAN_B, SPEAKER_DUTY_CYCLE);
-        extinguish_candle();
-        pwm_set_chan_level(pwm_gpio_to_slice_num(SPEAKER_PWM), PWM_CHAN_B, 0);
-        
-    };
-    printf("in timer callback\n");
+    printf("In timer\n");
+
+    check_flag = true;
+    
+    //printf("in timer callback\n");
 
     return true;
 }
@@ -163,9 +163,16 @@ void light_candle() {
     // move motor X back
 
     bool cancelled = cancel_repeating_timer(&timer);
+    if (cancelled) {
+        printf("cancelled but none should be on\n");
+    }
+    else {
+        printf("timer is not on. GOOD\n");
+    }
 
     float y_distance = 0.0f;
     //top level check
+    
     float top_y_dist = ultrasonic_reading();
     while (top_y_dist > HEIGHT_LIMIT) {
         printf("Height limit exceeded.\n");
@@ -217,6 +224,7 @@ void light_candle() {
     move_servo(NEUTRAL_DUTY_CYCLE);
     prev_distance = temp + LIGHT_HEIGHT_OFFSET;
 
+    
     add_repeating_timer_ms(10000, repeating_timer_callback, NULL, &timer);
 }
 

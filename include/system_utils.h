@@ -3,6 +3,8 @@
 
 #include "config.h"
 
+extern volatile bool check_flag;
+
 float ultrasonic_reading(void);
 bool candle_status(void);
 void move_stepper_horiz(FORK fork, bool out);
