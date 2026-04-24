@@ -46,8 +46,11 @@ typedef enum {
 #define MICROSTEPPING 1
 //#define XDIR 6  // VALID
 //#define XSTEP 5 // VALID
-#define YDIR 10  // VALID
+#define YDIR 9  // VALID
 #define YSTEP 8 // VALID
+#define EN 31
+#define SLP 32
+#define RST 33
 
 // Toggle Button
 #define BUTTON 21 // VALID

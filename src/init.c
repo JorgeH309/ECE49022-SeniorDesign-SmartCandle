@@ -28,6 +28,17 @@ void motor_gpio_init() {
     //gpio_set_function(XSTEP, GPIO_FUNC_SIO);
     //gpio_set_dir(XSTEP, GPIO_OUT);
 
+    gpio_set_function(EN, GPIO_FUNC_SIO);
+    gpio_set_function(SLP, GPIO_FUNC_SIO);
+    gpio_set_function(RST, GPIO_FUNC_SIO);
+
+    gpio_set_dir(EN, GPIO_OUT);
+    gpio_set_dir(SLP, GPIO_OUT);
+    gpio_set_dir(RST, GPIO_OUT);
+
+    gpio_put(EN, 0);
+    gpio_put(SLP, 1);
+    gpio_put(RST, 1);
 
     //DIR pin, output
     gpio_set_function(YDIR, GPIO_FUNC_SIO);
