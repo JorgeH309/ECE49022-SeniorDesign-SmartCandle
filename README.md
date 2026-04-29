@@ -2,7 +2,9 @@
 
 Collaborators: Scottie Gilden, Jorge Hernandez, Andrew Kloosterman and Deimos Teng
 
-Purpose: To build a device that can automate the lighting and extinguishing of a candle. ULtrasonic sensor is used to read distance between mechanical fork and candle. IR sensor to determine whether or not candle is lit. Stepper motor for vertical movement and servo motor for horizontal movement. PWM drives the gate driver that toggles ignitor wire on and off. Timer set up to extinguish candle when unsafe conditions (candle lit for too long) arise.
+Purpose: To build a device that can automate the lighting and extinguishing of a candle. 
+
+Implementation: Ultrasonic sensor is used to read distance between mechanical fork and candle. IR sensor to determine whether or not candle is lit. Stepper motor for vertical movement and servo motor for horizontal movement. PWM drives the gate driver that toggles ignitor wire on and off. Timer set up to extinguish candle when unsafe conditions (candle lit for too long) arise.
 
 ![](images/EmbeddedSoftwareDiagram.jpg)
 
