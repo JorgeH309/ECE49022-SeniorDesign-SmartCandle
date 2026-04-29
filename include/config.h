@@ -48,9 +48,9 @@ typedef enum {
 //#define XSTEP 5 // VALID
 #define YDIR 9  // VALID
 #define YSTEP 8 // VALID
-#define EN 31
-#define SLP 32
-#define RST 33
+#define EN 30
+#define SLP 29
+#define RST 28
 
 // Toggle Button
 #define BUTTON 21 // VALID
@@ -63,7 +63,7 @@ typedef enum {
 #define GATE_PWM 18 // VALID
 #define CLOCK_DIVIDER 150
 #define PERIOD 10000
-#define DUTY_CYCLE 9000
+#define DUTY_CYCLE 7500
 
 
 #define SPEAKER_PWM 17 // VALID
@@ -84,12 +84,12 @@ typedef enum {
 // ===============================
 // Fork Horizontal Movement Selection
 // ===============================
-#define LIGHT_DUTY_CYCLE 1093 
+#define LIGHT_DUTY_CYCLE 1056//1093 
 #define SNUFF_DUTY_CYCLE 1907
 
 #define SNUFF_HEIGHT_OFFSET 4.0f
-#define LIGHT_HEIGHT_OFFSET 4.5f
-#define HEIGHT_LIMIT 17.0f
+#define LIGHT_HEIGHT_OFFSET 5.0f
+#define HEIGHT_LIMIT 19.0f
 #endif
 
 // just use pin numbers directly on board

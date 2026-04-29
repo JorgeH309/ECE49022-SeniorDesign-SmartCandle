@@ -190,7 +190,7 @@ void light_candle() {
     move_servo(LIGHT_DUTY_CYCLE);
     //pwm_set_enabled(pwm_gpio_to_slice_num(GATE_PWM), true);
     pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, DUTY_CYCLE);
-    sleep_ms(2000);
+    sleep_ms(4000);
     if (top_y_dist < pos2_y_dist) {
         y_distance = top_y_dist;
         move_motor(top_y_dist - 5.0f - LIGHT_HEIGHT_OFFSET);
@@ -200,7 +200,7 @@ void light_candle() {
         move_motor(pos2_y_dist - 5.0f - LIGHT_HEIGHT_OFFSET);
     }
 
-    sleep_ms(1000);
+    sleep_ms(700);
     
     pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, 0);
 
@@ -209,14 +209,22 @@ void light_candle() {
 
     move_motor(-temp);
     
+    int idx = 0;
     while (!candle_status()) {
         printf("Candle is still not lit, trying again...\n");
+        idx++;
+        if (idx == 3) {
+            sleep_ms(2000);
+            move_servo(NEUTRAL_DUTY_CYCLE);
+            return;
+        }
+
         temp += 0.5f;
         //sleep_ms(1000);
         pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, DUTY_CYCLE);
 
         move_motor(temp);
-        sleep_ms(1000);
+        sleep_ms(700);
         pwm_set_chan_level(pwm_gpio_to_slice_num(GATE_PWM), PWM_CHAN_A, 0);
         move_motor(-temp);
     }
